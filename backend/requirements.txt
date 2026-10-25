@@ -1,34 +1,13 @@
-# PrecedentOracle Backend — Python Dependencies
-# Install: pip install -r requirements.txt
-
-# ── Core API ──────────────────────────────────────────────
 fastapi>=0.100.0
 uvicorn[standard]>=0.25.0
 pydantic>=2.0.0
 python-multipart>=0.0.6
-
-# ── PDF parsing for upload ────────────────────────────────
 pypdf>=4.0.0
 python-docx>=1.0.0
-
-# ── Scraper (Indian Kanoon) ───────────────────────────────
 requests>=2.31.0
 beautifulsoup4>=4.12.0
-
-# ── SQLite ORM (lightweight) ──────────────────────────────
 sqlalchemy>=2.0.0
-
-# ── InLegalBERT (law-ai/InLegalBERT from HuggingFace) ─────
-# Required for NLP Task 1 enhancement (BERT-based NER + embeddings).
-# First load downloads ~440MB to ~/.cache/huggingface.
-# WITHOUT these the pipeline gracefully falls back to regex NER.
-transformers>=4.35.0
-torch>=2.1.0
-
-# ── Optional NLP enhancements (uncomment as needed) ───────
-# spacy>=3.7.0          # pip install spacy && python -m spacy download en_core_web_sm
-# scikit-learn>=1.3.0   # TF-IDF (we use a pure-python fallback if missing)
-# rank_bm25>=0.2.2      # BM25 (we have pure-python implementation as fallback)
-
-# ── Report generation ─────────────────────────────────────
-reportlab>=4.0.0        # PDF generation
+reportlab>=4.0.0
+scikit-learn>=1.3.0
+rank-bm25>=0.2.2
+rapidfuzz>=3.0.0
