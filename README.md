@@ -22,7 +22,6 @@ A full-stack AI-powered Indian legal research platform with:
 ### Prerequisites
 - **Node.js 18+** or **Bun** (recommended)
 - **Python 3.10+**
-- **One AI API key** (Anthropic Claude recommended, or Google Gemini free)
 
 ### Step 1: Clone / Extract
 
@@ -42,14 +41,7 @@ cd precedent-karma
 cp .env.example .env
 ```
 
-Edit `.env` and add your API key:
 ```
-# ANTHROPIC_API_KEY=sk-ant-api03-...  (optional, only for Find Similar / AI Explain features)
-```
-
-Or use free Gemini:
-```
-GEMINI_API_KEY=your-gemini-key-here
 ```
 
 ### Step 3: Install frontend dependencies
@@ -279,11 +271,6 @@ bun install  # Use bun, not npm
 
 **"Tailwind CSS not working"**
 This project uses Tailwind v4. Use `bun install`, not `npm install`.
-
-**"API key invalid"**
-- Check `.env` has no trailing spaces or quotes
-- Anthropic key should start with `sk-ant-api03-`
-- Test: `curl -H "x-api-key: YOUR_KEY" https://api.anthropic.com/v1/messages`
 
 **"Backend won't start"**
 ```bash

@@ -161,4 +161,4 @@ INDIAN_KANOON_API_TOKEN=
 
 ---
 
-**सत्यमेव जयते** · M.Tech AI/ML · MSRUAS
+**सत्यमेव जयते** · PrecedentOracle · MSRUAS

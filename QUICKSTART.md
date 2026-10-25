@@ -297,5 +297,5 @@ PrecedentOracle/
 
 ---
 
-*Built with care for M.Tech AI/ML viva at MSRUAS.*
+*Built with care for PrecedentOracle viva at MSRUAS.*
 *सत्यमेव जयते*

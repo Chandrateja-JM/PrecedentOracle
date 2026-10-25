@@ -2,7 +2,7 @@
 
 **Project:** PrecedentOracle — Indian Legal Research Platform
 **Author:** Chandrateja JM
-**Institution:** M.Tech AI/ML, MSRUAS
+**Institution:** MSRUAS
 **Date:** 29 June 2026
 **Test Type:** End-to-end NLP pipeline validation against (a) sample text and (b) extracted PDF text
 
