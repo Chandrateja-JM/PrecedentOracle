@@ -1,0 +1,264 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* PrecedentOracle — Light theme for projector presentations.
+ * Warm off-white surfaces. Dark sidebar for contrast (Linear/Notion).
+ * Cream paper for reading panels. Knowledge Graph wraps in .dark to stay dark.
+ */
+
+@theme inline {
+  --font-display: "Playfair Display", "Source Serif 4", Georgia, serif;
+  --font-serif: "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-deva: "Noto Serif Devanagari", "Noto Serif", serif;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-glass: var(--surface-glass);
+  --color-paper: var(--paper);
+  --color-paper-ink: var(--paper-ink);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-border-emphasis: var(--border-emphasis);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-bright: var(--gold-bright);
+  --color-info: var(--info);
+  --color-verified: var(--verified);
+  --color-weak: var(--weak);
+  --color-risk: var(--risk);
+  --color-overruled: var(--overruled);
+  --color-saffron: var(--saffron);
+  --color-india-green: var(--india-green);
+  --color-ashoka: var(--ashoka);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --shadow-elev-1: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-elev-2: 0 4px 14px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-elev-3: 0 18px 44px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.04);
+  --shadow-gold-glow: 0 0 0 1px rgba(201, 168, 76, 0.30), 0 10px 28px rgba(201, 168, 76, 0.18);
+}
+
+:root {
+  /* LIGHT theme — warm off-white optimised for projectors */
+  --background: oklch(0.985 0.003 85);          /* #FAFAF8 warm off-white */
+  --foreground: oklch(0.22 0.005 260);          /* #1C1E21 */
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.78);
+  --paper: #F5F1E8;                              /* cream reading paper */
+  --paper-ink: oklch(0.22 0.01 260);
+
+  --card: #ffffff;
+  --card-foreground: oklch(0.22 0.005 260);
+  --popover: #ffffff;
+  --popover-foreground: oklch(0.22 0.005 260);
+  --primary: oklch(0.71 0.115 80);              /* gold #C9A84C */
+  --primary-foreground: oklch(0.18 0.005 260);
+  --secondary: oklch(0.96 0.005 260);
+  --secondary-foreground: oklch(0.22 0.005 260);
+  --muted: oklch(0.96 0.005 260);
+  --muted-foreground: oklch(0.50 0.01 260);     /* #6B7280 */
+  --accent: oklch(0.94 0.005 260);
+  --accent-foreground: oklch(0.22 0.005 260);
+  --destructive: oklch(0.58 0.21 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.91 0.004 260);
+  --border-emphasis: oklch(0.85 0.005 260);
+  --input: oklch(0.94 0.005 260);
+  --ring: oklch(0.71 0.115 80);
+
+  --gold: oklch(0.71 0.115 80);
+  --gold-soft: oklch(0.71 0.115 80 / 0.16);
+  --gold-bright: oklch(0.80 0.135 85);
+  --info: oklch(0.55 0.15 250);
+  --verified: oklch(0.52 0.16 145);
+  --weak: oklch(0.65 0.16 65);
+  --risk: oklch(0.55 0.22 28);
+  --overruled: oklch(0.48 0.20 25);
+  --saffron: oklch(0.72 0.17 55);
+  --india-green: oklch(0.50 0.18 145);
+  --ashoka: oklch(0.32 0.12 260);
+
+  /* Sidebar stays DARK (#1A1D23) for contrast */
+  --sidebar: oklch(0.205 0.008 260);
+  --sidebar-foreground: oklch(0.86 0.005 260);
+  --sidebar-primary: oklch(0.755 0.115 85);
+  --sidebar-primary-foreground: oklch(0.18 0.005 260);
+  --sidebar-accent: oklch(0.26 0.008 260);
+  --sidebar-accent-foreground: oklch(0.97 0 0);
+  --sidebar-border: oklch(0.28 0.008 260);
+  --sidebar-ring: oklch(0.755 0.115 85);
+
+  --radius: 0.625rem;
+}
+
+/* DARK override — applied via .dark class on a wrapping element (Knowledge Graph) */
+.dark {
+  --background: oklch(0.158 0.005 260);
+  --foreground: oklch(0.92 0.005 260);
+  --surface: oklch(0.195 0.006 260);
+  --surface-elevated: oklch(0.225 0.008 260);
+  --surface-glass: oklch(0.225 0.008 260 / 0.7);
+  --card: oklch(0.195 0.006 260);
+  --card-foreground: oklch(0.92 0.005 260);
+  --popover: oklch(0.22 0.008 260);
+  --popover-foreground: oklch(0.92 0.005 260);
+  --secondary: oklch(0.26 0.008 260);
+  --secondary-foreground: oklch(0.92 0.005 260);
+  --muted: oklch(0.245 0.008 260);
+  --muted-foreground: oklch(0.66 0.015 260);
+  --accent: oklch(0.30 0.012 260);
+  --accent-foreground: oklch(0.92 0.005 260);
+  --border: oklch(0.30 0.008 260);
+  --border-emphasis: oklch(0.40 0.012 260);
+  --input: oklch(0.28 0.008 260);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01", "ss03";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background-image:
+      radial-gradient(1100px 600px at 12% -10%, oklch(0.71 0.115 80 / 0.06), transparent 60%),
+      radial-gradient(900px 500px at 96% 0%, oklch(0.32 0.12 260 / 0.05), transparent 55%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0.01em; }
+  .font-serif { font-family: var(--font-serif); }
+  .font-mono { font-family: var(--font-mono); }
+  .font-deva { font-family: var(--font-deva); }
+
+  ::selection { background: oklch(0.71 0.115 80 / 0.30); color: var(--foreground); }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-emphasis); border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); }
+}
+
+@layer utilities {
+  .glass {
+    background: color-mix(in oklab, var(--surface-elevated) 88%, transparent);
+    backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-elev-1);
+  }
+  .glass-strong {
+    background: color-mix(in oklab, var(--surface-elevated) 94%, transparent);
+    backdrop-filter: blur(22px) saturate(150%);
+    border-bottom: 1px solid var(--border);
+  }
+  .gold-gradient {
+    background: linear-gradient(135deg, oklch(0.80 0.135 85), oklch(0.66 0.115 78));
+    color: oklch(0.18 0.005 260);
+  }
+  .gold-text {
+    background: linear-gradient(135deg, oklch(0.62 0.13 78), oklch(0.50 0.12 70));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dark .gold-text {
+    background: linear-gradient(135deg, oklch(0.85 0.135 88), oklch(0.7 0.11 80));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .tricolor-strip {
+    height: 3px;
+    background: linear-gradient(to right,
+      var(--saffron) 0%, var(--saffron) 33%,
+      #ffffff 33%, #ffffff 66%,
+      var(--india-green) 66%, var(--india-green) 100%);
+  }
+  .gold-border {
+    position: relative;
+    border: 1px solid transparent;
+    background:
+      linear-gradient(var(--surface-elevated), var(--surface-elevated)) padding-box,
+      linear-gradient(135deg, oklch(0.71 0.115 80 / 0.55), oklch(0.71 0.115 80 / 0.06) 60%) border-box;
+  }
+  .hairline { box-shadow: inset 0 -1px 0 var(--border); }
+  .paper {
+    background: var(--paper);
+    color: var(--paper-ink);
+    font-family: var(--font-serif);
+  }
+  .legal-mono { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: -0.005em; }
+  .skeleton-shimmer {
+    background: linear-gradient(90deg,
+      var(--muted) 0%, var(--accent) 40%,
+      var(--muted) 80%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .live-pulse {
+    animation: live-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes live-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 oklch(0.55 0.22 28 / 0.45); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 6px oklch(0.55 0.22 28 / 0); }
+  }
+  .scroll-fade-x {
+    mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+  }
+  .ashoka-watermark {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><circle cx='100' cy='100' r='90' fill='none' stroke='%231C1E21' stroke-width='2'/><circle cx='100' cy='100' r='14' fill='%231C1E21'/><g stroke='%231C1E21' stroke-width='2'><line x1='100' y1='10' x2='100' y2='190'/><line x1='10' y1='100' x2='190' y2='100'/><line x1='36.5' y1='36.5' x2='163.5' y2='163.5'/><line x1='163.5' y1='36.5' x2='36.5' y2='163.5'/></g></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+}
+
+@media print {
+  header, aside, footer, [data-sidebar="sidebar"], .no-print { display: none !important; }
+  main, article { box-shadow: none !important; }
+  body { background: white !important; }
+}

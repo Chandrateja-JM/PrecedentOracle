@@ -1,0 +1,443 @@
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import {
+  ArrowRight, FileText, FileSearch, FileCheck2, Scale, Sparkles,
+  Brain, BadgeCheck, BookOpen, ChevronRight, ExternalLink, Newspaper, Loader2, Radio,
+} from "lucide-react";
+import { AISearchBar } from "@/components/ai-search-bar";
+
+import { Button } from "@/components/ui/button";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import {
+  LANDMARK_CASES, LIVE_FEED, RECENT_SESSIONS, COURTS, SAMPLE_DOCUMENTS, LEGAL_NEWS, WATCH_VIDEOS,
+} from "@/lib/seed-data";
+import { Play } from "lucide-react";
+import { identifyCase } from "@/lib/ai.functions";
+import { toast } from "sonner";
+
+
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Command Center — PrecedentOracle" },
+      { name: "description", content: "Precedents you can actually cite. India's AI Legal Operating System." },
+      { property: "og:title", content: "PrecedentOracle — Command Center" },
+      { property: "og:description", content: "Five specialized agents. Real legal NLP. Zero invented citations." },
+    ],
+  }),
+  component: CommandCenter,
+});
+
+function CommandCenter() {
+  const navigate = useNavigate();
+  const [court, setCourt] = useState<string>("Supreme Court of India");
+  const [text, setText] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const runIdentify = useServerFn(identifyCase);
+
+  const beginResearch = () => {
+    navigate({ to: "/research", search: { text: text || undefined, court } as never });
+  };
+
+  const aiIdentify = async () => {
+    if (!text.trim()) { toast.error("Type a case name, person, or description first."); return; }
+    setAiLoading(true);
+    try {
+      const r = await runIdentify({ data: { query: text } });
+      const prefill = `${r.caseName}\n${r.citation} · ${r.court} · ${r.year}\n\nPetitioner: ${r.parties.petitioner}\nRespondent: ${r.parties.respondent}\n\nHolding: ${r.holding}\n\nPrinciple: ${r.principle}\n\nSummary: ${r.summary}`;
+      toast.success(`Identified: ${r.caseName} (${Math.round(r.confidence * 100)}% confidence)`);
+      navigate({ to: "/research", search: { text: prefill, court: r.court } as never });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "AI identification failed");
+    } finally { setAiLoading(false); }
+  };
+
+
+  return (
+    <div className="relative">
+      {/* HERO */}
+      <section className="relative overflow-hidden">
+        <div className="tricolor-strip" />
+        <div className="absolute inset-0 pointer-events-none opacity-[0.025] ashoka-watermark"
+             style={{ backgroundSize: "min(720px, 60vw)" }} />
+        <div className="absolute inset-x-0 top-0 h-[520px] pointer-events-none"
+             style={{ background: "radial-gradient(60% 80% at 50% 0%, oklch(0.71 0.115 80 / 0.10), transparent 70%)" }} />
+
+        <div className="relative px-8 pt-16 pb-12 max-w-[1400px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="text-center max-w-4xl mx-auto"
+          >
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-primary">
+              <Sparkles className="h-3 w-3" /> India's AI Legal Operating System
+            </div>
+            <h1 className="mt-6 font-display text-6xl md:text-7xl font-bold leading-[1.02] tracking-tight text-foreground">
+              Precedents You Can <span className="gold-text italic">Actually</span> Cite.
+            </h1>
+            <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Five specialized agents. Real legal NLP grounded in Indian Kanoon.
+              <span className="text-foreground/90"> Zero invented citations.</span>
+            </p>
+
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+              <Button asChild size="lg" className="gold-gradient hover:opacity-95 shadow-elev-2 border-0 font-medium h-11 px-6">
+                <Link to="/research" search={{ fresh: "1" } as never}>Start Research <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+              </Button>
+              <Button asChild size="lg" variant="outline"
+                className="h-11 px-6 border-primary/40 bg-surface text-foreground hover:bg-accent/40 hover:border-primary/60">
+                <Link to="/research" search={{ sample: "sample-judgment" } as never}>Try Sample Document</Link>
+              </Button>
+              <Button asChild variant="ghost" size="lg" className="text-primary hover:text-primary/80 h-11">
+                <Link to="/graph">Explore Knowledge Graph <ChevronRight className="ml-0.5 h-4 w-4" /></Link>
+              </Button>
+            </div>
+
+            <div className="mt-10 inline-flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[12px] font-mono text-muted-foreground border-t border-border/60 pt-6">
+              <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-verified" /> Indexed: <strong className="text-foreground font-mono">50</strong> landmark judgments</span>
+              <span>Verified citations only</span>
+              <span>Live Indian Kanoon · cached</span>
+              <span className="flex items-center gap-1.5"><Radio className="h-3 w-3 text-risk live-pulse" /> Curated live feed</span>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* THREE-PANEL DASHBOARD */}
+      <section className="px-8 pb-12 max-w-[1400px] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          {/* Recent Sessions */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            className="lg:col-span-3 glass rounded-xl p-5"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-display text-sm uppercase tracking-[0.18em] text-muted-foreground">Recent Sessions</h3>
+              <Link to="/research" className="text-[11px] text-primary hover:underline">View all</Link>
+            </div>
+            <ul className="space-y-3">
+              {RECENT_SESSIONS.slice(0, 5).map((s) => (
+                <li key={s.id} className="group">
+                  <Link to="/research" search={{ session: s.id } as never} className="block">
+                    <div className="flex items-start gap-2.5">
+                      <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[13px] font-medium text-foreground group-hover:text-primary truncate">
+                          {s.title}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-[10.5px] text-muted-foreground">
+                          <span>{s.court}</span>
+                          <span>·</span>
+                          <span className={s.status === "Complete" ? "text-verified" : "text-weak"}>{s.status}</span>
+                          <span className="ml-auto font-mono">{s.readinessScore}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Quick Start */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+            className="lg:col-span-6 gold-border rounded-xl p-6 shadow-elev-3 relative overflow-hidden"
+          >
+            <div className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                <span className="text-[10.5px] font-mono uppercase tracking-[0.22em] text-primary">Quick Start</span>
+              </div>
+              <h2 className="font-display text-2xl font-semibold mb-4 text-foreground">Begin research in seconds</h2>
+
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                rows={5}
+                placeholder="Paste case facts, judgment text, FIR, contract, or upload document…"
+                className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm font-serif leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition resize-none"
+              />
+
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Select value={court} onValueChange={setCourt}>
+                  <SelectTrigger className="w-[260px] bg-background border-border">
+                    <SelectValue placeholder="Select court" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {COURTS.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Button onClick={aiIdentify} disabled={aiLoading} variant="outline" className="ml-auto border-primary/40 gap-1.5">
+                  {aiLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Identifying…</> : <><Sparkles className="h-4 w-4 text-primary" /> AI Identify</>}
+                </Button>
+                <Button onClick={beginResearch} className="gold-gradient hover:opacity-95 border-0">
+                  Begin Research <ArrowRight className="ml-1.5 h-4 w-4" />
+                </Button>
+              </div>
+
+
+              <div className="mt-5 pt-5 border-t border-border/60">
+                <div className="text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground mb-2.5">
+                  Sample documents
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {SAMPLE_DOCUMENTS.map((doc) => {
+                    const Icon = doc.type === "Judgment" ? FileText : doc.type === "FIR" ? FileSearch : doc.type === "Contract" ? FileCheck2 : Scale;
+                    return (
+                      <Link
+                        key={doc.id}
+                        to="/research"
+                        search={{ sample: doc.id } as never}
+                        className="group flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-[12px] hover:border-primary/40 hover:bg-accent/40 transition"
+                      >
+                        <Icon className="h-3.5 w-3.5 text-primary" />
+                        <span className="text-foreground/85 group-hover:text-foreground">{doc.type}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Live Feed — real links */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            className="lg:col-span-3 glass rounded-xl p-5"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-display text-sm uppercase tracking-[0.18em] text-muted-foreground flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-risk live-pulse" /> Live India Legal
+              </h3>
+            </div>
+            <ul className="space-y-3">
+              {LIVE_FEED.slice(0, 6).map((f) => (
+                <li key={f.id} className="text-[12px] leading-snug">
+                  <a
+                    href={f.url ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block group hover:bg-accent/40 -mx-2 px-2 py-1 rounded transition"
+                  >
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="text-primary font-medium text-[10.5px] uppercase tracking-wide font-mono">{f.source}</span>
+                      <span className="text-muted-foreground text-[10px]">· {f.timeAgo}</span>
+                      <ExternalLink className="h-2.5 w-2.5 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100" />
+                    </div>
+                    <div className="text-foreground/85 group-hover:text-foreground">{f.headline}</div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* AI RESEARCH HUB — replaces the capability marketing band */}
+      <section className="px-8 pb-12 max-w-[1400px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }}
+          className="gold-border rounded-2xl p-6 md:p-8 relative overflow-hidden"
+        >
+          <div className="absolute -top-32 -right-32 h-80 w-80 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span className="text-[10.5px] font-mono uppercase tracking-[0.22em] text-primary">AI Research Hub</span>
+            </div>
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-foreground leading-tight">
+              Ask anything. Find any case, judge, statute, or doctrine.
+            </h2>
+            <p className="text-[13px] text-muted-foreground mt-2 max-w-2xl">
+              Hybrid AI search across the indexed corpus with NLP fallback. Type a name, citation, section, or a plain-English question.
+            </p>
+
+            <div className="mt-5">
+              <AISearchBar
+                context="global"
+                placeholder='Try: "Puttaswamy 2017", "Justice Chandrachud", "BNS 303", or "what is the punishment for theft"'
+                onSelect={(sel) => {
+                  if (sel.kind === "case") navigate({ to: "/precedents" });
+                  else if (sel.kind === "judge") navigate({ to: "/judges" });
+                  else if (sel.kind === "statute") navigate({ to: "/library" });
+                  else if (sel.kind === "page" && sel.page) navigate({ to: sel.page.id as never });
+                }}
+              />
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                { icon: Brain, label: "Research a Case", desc: "5-agent pipeline", to: "/research" as const, search: { fresh: "1" } },
+                { icon: Scale, label: "Find a Judge", desc: "Public-data analytics", to: "/judges" as const, search: undefined },
+                { icon: BadgeCheck, label: "Verify Citations", desc: "Indian Kanoon checks", to: "/citations" as const, search: undefined },
+                { icon: BookOpen, label: "Explore Law", desc: "Bare acts & sections", to: "/library" as const, search: undefined },
+              ].map((q) => (
+                <Link
+                  key={q.label}
+                  to={q.to}
+                  search={q.search as never}
+                  className="group rounded-xl border border-border bg-surface/70 hover:border-primary/50 hover:shadow-gold-glow transition p-4 flex items-start gap-3"
+                >
+                  <div className="h-9 w-9 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center flex-shrink-0">
+                    <q.icon className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-display text-[14px] font-semibold text-foreground group-hover:text-primary transition">{q.label}</div>
+                    <div className="text-[11.5px] text-muted-foreground mt-0.5">{q.desc}</div>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition flex-shrink-0 mt-1" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+
+      {/* LANDMARK STRIP */}
+      <section className="pb-12">
+        <div className="max-w-[1400px] mx-auto px-8 mb-4 flex items-baseline justify-between">
+          <div>
+            <h2 className="font-display text-2xl font-semibold text-foreground">Landmark Constellation</h2>
+            <p className="text-sm text-muted-foreground mt-1">50 cases that shape Indian jurisprudence. Click to explore in the Knowledge Graph.</p>
+          </div>
+          <Link to="/graph" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+            View graph <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+        <div className="scroll-fade-x overflow-x-auto px-8">
+          <div className="flex gap-4 pb-4 max-w-[1400px] mx-auto">
+            {LANDMARK_CASES.slice(0, 14).map((c) => (
+              <Link
+                key={c.id}
+                to="/graph"
+                search={{ case: c.id } as never}
+                className="min-w-[300px] max-w-[300px] glass rounded-lg p-4 hover:border-primary/40 hover:shadow-gold-glow transition group"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-primary">{c.category}</span>
+                  <span className="text-[10px] font-mono text-muted-foreground">{c.year}</span>
+                </div>
+                <div className="font-display text-[15px] font-semibold leading-snug text-foreground group-hover:text-primary transition">
+                  {c.name}
+                </div>
+                <div className="legal-mono text-muted-foreground mt-2 truncate">{c.citation}</div>
+                <div className="mt-3 text-[12px] text-foreground/75 line-clamp-3 leading-relaxed">{c.principle}</div>
+                <div className="mt-3 pt-3 border-t border-border/60 flex items-center justify-between text-[10.5px] text-muted-foreground">
+                  <span>{c.bench}</span>
+                  {c.status === "overruled"
+                    ? <span className="text-overruled font-medium">Overruled</span>
+                    : c.status === "landmark"
+                      ? <span className="text-primary font-medium">★ Landmark</span>
+                      : <span className="text-verified">Active</span>}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* LEGAL NEWS — Google News style */}
+      <section className="pb-20 max-w-[1400px] mx-auto px-8">
+        <div className="mb-5 flex items-baseline justify-between">
+          <div>
+            <h2 className="font-display text-2xl font-semibold text-foreground flex items-center gap-2">
+              <Newspaper className="h-5 w-5 text-primary" />
+              Legal News
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">Curated from LiveLaw, Bar and Bench, and SCC Online.</p>
+          </div>
+          <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-muted-foreground">Curated</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {LEGAL_NEWS.map((n, i) => (
+            <motion.a
+              key={n.id}
+              href={n.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.04 * i + 0.4 }}
+              className="group block rounded-xl border border-border bg-surface overflow-hidden shadow-elev-1 hover:shadow-elev-2 hover:border-primary/40 transition"
+            >
+              <div className="h-36 relative overflow-hidden bg-muted">
+                <img src={n.image} alt={n.headline} loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                <div className="absolute top-2 left-2 inline-flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider text-foreground shadow-sm">
+                  {n.source}
+                </div>
+                <div className="absolute bottom-2 right-2 inline-flex items-center rounded-full bg-foreground/80 px-2 py-0.5 text-[10px] text-background">
+                  {n.category}
+                </div>
+              </div>
+              <div className="p-4">
+                <h3 className="font-display text-[14.5px] font-semibold leading-snug text-foreground group-hover:text-primary line-clamp-3 min-h-[3.6em]">
+                  {n.headline}
+                </h3>
+                <div className="mt-3 flex items-center justify-between text-[10.5px] text-muted-foreground">
+                  <span>{n.timeAgo}</span>
+                  <span className="inline-flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition">
+                    Read <ExternalLink className="h-3 w-3" />
+                  </span>
+                </div>
+              </div>
+            </motion.a>
+          ))}
+        </div>
+
+        {/* WATCH — YouTube channels */}
+        <div className="mt-10 mb-4 flex items-baseline justify-between">
+          <div>
+            <h2 className="font-display text-2xl font-semibold text-foreground flex items-center gap-2">
+              <Play className="h-5 w-5 text-primary" /> Watch
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">Live courtroom feeds and weekly briefings from legal channels.</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {WATCH_VIDEOS.map((v, i) => (
+            <motion.a
+              key={v.id} href={v.url} target="_blank" rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.04 * i + 0.45 }}
+              className="group block rounded-xl border border-border bg-surface overflow-hidden shadow-elev-1 hover:shadow-elev-2 hover:border-primary/40 transition"
+            >
+              <div className="relative aspect-video bg-muted overflow-hidden">
+                <img src={v.thumbnail} alt={v.title} loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="h-14 w-14 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-elev-2 group-hover:scale-110 transition">
+                    <Play className="h-6 w-6 text-foreground ml-0.5" fill="currentColor" />
+                  </div>
+                </div>
+                <div className={`absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider ${
+                  v.duration === "LIVE" ? "bg-risk text-white live-pulse" : "bg-black/70 text-white"
+                }`}>
+                  {v.duration}
+                </div>
+              </div>
+              <div className="p-4">
+                <h3 className="font-display text-[14.5px] font-semibold leading-snug text-foreground group-hover:text-primary line-clamp-2">
+                  {v.title}
+                </h3>
+                <div className="mt-2 text-[11px] text-muted-foreground flex items-center gap-1">
+                  <span className="font-mono">{v.channel}</span>
+                  <ExternalLink className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition" />
+                </div>
+              </div>
+            </motion.a>
+          ))}
+        </div>
+      </section>
+
+    </div>
+  );
+}

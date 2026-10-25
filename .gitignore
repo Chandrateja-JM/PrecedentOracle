@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+backend/venv/
+backend/__pycache__/
+**/__pycache__/
+*.pyc
+
+# Build outputs
+dist/
+.vercel/
+.output/
+.vinxi/
+.nitro/
+
+# Secrets — NEVER commit
+.env
+.env.local
+.env.*.local
+
+# Database (rebuilt by init_db.py)
+backend/data/*.db
+
+# Logs & scratch
+*.log
+nlp_test_full.json
+test_judgment.pdf
+
+# OS / editor
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# Lovable
+.lovable/
