@@ -46,7 +46,7 @@ cp .env.example .env
 Edit `.env` to include at least:
 
 ```env
-ANTHROPIC_API_KEY=sk-ant-api03-xxxxx
+# ANTHROPIC_API_KEY=sk-ant-api03-...  (optional)
 VITE_API_URL=http://localhost:8000
 VITE_GOOGLE_API_KEY=AIzaSyxxxxx
 VITE_GOOGLE_CSE_ID=xxxxxx

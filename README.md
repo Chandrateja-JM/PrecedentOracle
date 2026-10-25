@@ -2,8 +2,6 @@
 
 **"Precedents You Can Actually Cite."**
 
-M.Tech AI/ML Thesis Project — MSRUAS (Ramaiah University of Applied Sciences)  
-Developer: Chandrateja | Evaluators: Dr. Narendra Babu, Dr. Prabadevi
 
 ---
 
@@ -46,7 +44,7 @@ cp .env.example .env
 
 Edit `.env` and add your API key:
 ```
-ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
+# ANTHROPIC_API_KEY=sk-ant-api03-...  (optional, only for Find Similar / AI Explain features)
 ```
 
 Or use free Gemini:
