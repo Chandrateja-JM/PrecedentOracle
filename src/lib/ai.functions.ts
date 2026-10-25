@@ -50,7 +50,7 @@ function getModel() {
 const IdentifyInput = z.object({ query: z.string().min(2).max(500) });
 
 export const identifyCase = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => IdentifyInput.parse(input))
+  .validator((input: unknown) => IdentifyInput.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
@@ -95,7 +95,7 @@ const CaseRefSchema = z.object({
 });
 
 export const runResearchPipeline = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => PipelineInput.parse(input))
+  .validator((input: unknown) => PipelineInput.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
@@ -164,7 +164,7 @@ export type ResearchPipelineResult = Awaited<ReturnType<typeof runResearchPipeli
 const SimilarInput = z.object({ caseName: z.string(), context: z.string().optional() });
 
 export const findSimilarCases = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => SimilarInput.parse(input))
+  .validator((input: unknown) => SimilarInput.parse(input))
   .handler(async ({ data }) => {
     // Lenient schema: coerce numbers→strings, allow missing fields, give defaults.
     // This was the source of the "schema error" you were seeing — the LLM
@@ -209,7 +209,7 @@ export const findSimilarCases = createServerFn({ method: "POST" })
 const SuggestInput = z.object({ text: z.string().min(10).max(5000), caseType: z.string() });
 
 export const aiSuggestions = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => SuggestInput.parse(input))
+  .validator((input: unknown) => SuggestInput.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
@@ -235,7 +235,7 @@ const PlainInput = z.object({
 });
 
 export const explainSection = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => PlainInput.parse(input))
+  .validator((input: unknown) => PlainInput.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
@@ -261,7 +261,7 @@ const RoadmapInput = z.object({
 });
 
 export const generateRoadmap = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => RoadmapInput.parse(input))
+  .validator((input: unknown) => RoadmapInput.parse(input))
   .handler(async ({ data }) => {
     // Lenient schema — the LLM often returns "Medium" / "Moderate" / "High"
     // or capitalized variants. Normalize to lowercase enum.
@@ -317,7 +317,7 @@ Use BNSS 2023 (not CrPC) and BSA 2023 (not IEA).`,
 const JudgeInsightInput = z.object({ judgeName: z.string(), court: z.string() });
 
 export const judgeInsights = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => JudgeInsightInput.parse(input))
+  .validator((input: unknown) => JudgeInsightInput.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
@@ -338,7 +338,7 @@ export const judgeInsights = createServerFn({ method: "POST" })
 const VerifyInput = z.object({ citation: z.string().min(3).max(500) });
 
 export const verifyCitation = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => VerifyInput.parse(input))
+  .validator((input: unknown) => VerifyInput.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
@@ -364,7 +364,7 @@ export const verifyCitation = createServerFn({ method: "POST" })
 const ExtractInput = z.object({ text: z.string().min(20).max(20000) });
 
 export const extractCitations = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => ExtractInput.parse(input))
+  .validator((input: unknown) => ExtractInput.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
@@ -389,7 +389,7 @@ export const extractCitations = createServerFn({ method: "POST" })
 const ExplainCaseInput = z.object({ caseName: z.string(), citation: z.string(), principle: z.string() });
 
 export const explainCase = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => ExplainCaseInput.parse(input))
+  .validator((input: unknown) => ExplainCaseInput.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
@@ -414,7 +414,7 @@ const AISearchInput = z.object({
 });
 
 export const aiSearch = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => AISearchInput.parse(input))
+  .validator((input: unknown) => AISearchInput.parse(input))
   .handler(async ({ data }) => {
     
     const focusHint = {

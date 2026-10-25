@@ -51,7 +51,7 @@ const Agent1Input = z.object({
 });
 
 export const agent1Extract = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => Agent1Input.parse(input))
+  .validator((input: unknown) => Agent1Input.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
@@ -101,7 +101,7 @@ const Agent2Input = z.object({
 });
 
 export const agent2RankPrecedents = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => Agent2Input.parse(input))
+  .validator((input: unknown) => Agent2Input.parse(input))
   .handler(async ({ data }) => {
     if (data.candidates.length === 0) {
       return { supporting: [], opposing: [] };
@@ -141,7 +141,7 @@ const Agent3Input = z.object({
 });
 
 export const agent3ExplainUnmatched = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => Agent3Input.parse(input))
+  .validator((input: unknown) => Agent3Input.parse(input))
   .handler(async ({ data }) => {
     if (data.unmatched.length === 0) return { explained: [] };
     
@@ -181,7 +181,7 @@ const Agent4Input = z.object({
 });
 
 export const agent4ExplainRisk = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => Agent4Input.parse(input))
+  .validator((input: unknown) => Agent4Input.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
@@ -222,7 +222,7 @@ const Agent5Input = z.object({
 });
 
 export const agent5Synthesize = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => Agent5Input.parse(input))
+  .validator((input: unknown) => Agent5Input.parse(input))
   .handler(async ({ data }) => {
     
     const { output } = await generateText({
